@@ -25,11 +25,11 @@ public class TemperatureConverter {
     /**
      * Converts Kelvin to Fahrenheit.
      *
-     * @param kel The temperature in Kelvin.
+     * @param kelvin The temperature in Kelvin.
      * @return The temperature in Fahrenheit.
      */
-    public static double kelvinToFah(double kel) {
-        return (kel - 273.15) * (9.0 / 5.0) + 32;
+    public static double kelvinToFahrenheit(double kelvin) {
+        return Math.round((kelvin - 273.15) * (9 / 5) + 32);
     }
 
     /**
