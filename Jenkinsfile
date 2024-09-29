@@ -1,42 +1,43 @@
 pipeline {
     agent any
-    tools {
-        maven 'Maven3'  // Ensure Maven is installed
-        jdk 'JDK21'     // Ensure JDK is installed
-    }
+
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/eetuam1/TemperatureConverter.git'  // Make sure this points to the correct repository
+                git url: 'https://github.com/eetuam1/TemperatureConverter.git', branch: 'main'
             }
         }
+
         stage('Build') {
             steps {
-                bat 'mvn clean package'  // Use 'sh' instead of 'bat' if on a Unix/Linux system
+                // Use 'bat' for Windows, 'sh' for Unix-based systems
+                bat 'mvn clean install'
             }
         }
-        stage('Run Unit Tests') {
+
+        stage('Test') {
             steps {
-                bat 'mvn test'  // Use 'sh' instead of 'bat' if on a Unix/Linux system
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'  // Capture test reports
-                }
+                bat 'mvn test'
             }
         }
-        stage('Code Coverage Report') {
+
+        stage('Code Coverage') {
             steps {
-                bat 'mvn jacoco:report'  // Use 'sh' instead of 'bat' if on a Unix/Linux system
+                bat 'mvn jacoco:report'
             }
-            post {
-                        // Publish JaCoCo code coverage report
-                        jacoco execPattern: '**/target/jacoco.exec',
-                               classPattern: '**/target/classes',
-                               sourcePattern: '**/src/main/java',
-                               inclusionPattern: '**/*.class'
-                }
-            }
+        }
+    }
+
+    post {
+        always {
+            // Publish JUnit test results
+            junit '**/target/surefire-reports/*.xml'
+
+            // Publish JaCoCo code coverage report
+            jacoco execPattern: '**/target/jacoco.exec',
+                   classPattern: '**/target/classes',
+                   sourcePattern: '**/src/main/java',
+                   inclusionPattern: '**/*.class'
         }
     }
 }
