@@ -30,8 +30,11 @@ pipeline {
                 bat 'mvn jacoco:report'  // Use 'sh' instead of 'bat' if on a Unix/Linux system
             }
             post {
-                always {
-                    jacoco execPattern: 'target/jacoco.exec'  // Capture JaCoCo coverage
+                        // Publish JaCoCo code coverage report
+                        jacoco execPattern: '**/target/jacoco.exec',
+                               classPattern: '**/target/classes',
+                               sourcePattern: '**/src/main/java',
+                               inclusionPattern: '**/*.class'
                 }
             }
         }
